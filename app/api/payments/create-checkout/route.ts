@@ -5,6 +5,10 @@ import { stripe, PRICES } from "@/lib/stripe"
 
 export async function POST(req: Request) {
   try {
+    if (!stripe) {
+      return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 })
+    }
+
     const session = await getServerSession(authOptions)
     
     if (!session?.user?.id) {
