@@ -1,0 +1,27 @@
+# Digital Ocean App Platform Deployment Configuration - DEV Environment
+name: three-tier-template-dev
+services:
+- name: web
+  source_dir: /
+  github:
+    repo: YOUR_USERNAME/YOUR_REPO_NAME
+    branch: dev
+    deploy_on_push: true
+  run_command: gunicorn --bind 0.0.0.0:8080 --workers 2 app:app
+  environment_slug: python
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  http_port: 8080
+  envs:
+  - key: ENVIRONMENT
+    value: dev
+    type: SECRET
+  - key: DATABASE_URL
+    value: YOUR_DEV_DATABASE_URL
+    type: SECRET
+  - key: REDIS_URL
+    value: YOUR_DEV_REDIS_URL
+    type: SECRET
+  - key: FLASK_ENV
+    value: production
+    type: SECRET

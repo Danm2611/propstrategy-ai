@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three-Tier Dev Template</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .status-card {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #4CAF50;
+        }
+        .environment {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #FFD700;
+            text-transform: uppercase;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        .feature-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Three-Tier Development Template</h1>
+        
+        <div class="status-card">
+            <h3>Environment Status</h3>
+            <p><strong>Current Environment:</strong> <span class="environment">{{ environment }}</span></p>
+            <p><strong>Server Time:</strong> {{ current_time }}</p>
+        </div>
+
+        <div class="status-card">
+            <h3>🎯 System Information</h3>
+            <p>✅ Flask application running</p>
+            <p>✅ Docker container active</p>
+            <p>✅ Template system loaded</p>
+        </div>
+
+        <div class="feature-section">
+            <h3>Available Actions</h3>
+            <button onclick="testAPI()">Test API</button>
+            <button onclick="checkHealth()">Health Check</button>
+            <button onclick="location.reload()">Refresh</button>
+        </div>
+
+        <div id="result" style="margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        async function testAPI() {
+            try {
+                const response = await fetch('/api/test');
+                const data = await response.json();
+                document.getElementById('result').innerHTML = 
+                    `<div class="status-card"><h4>API Response:</h4><pre>${JSON.stringify(data, null, 2)}</pre></div>`;
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    `<div class="status-card" style="border-left-color: #f44336;"><h4>Error:</h4><p>${error.message}</p></div>`;
+            }
+        }
+
+        async function checkHealth() {
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                document.getElementById('result').innerHTML = 
+                    `<div class="status-card"><h4>Health Check:</h4><pre>${JSON.stringify(data, null, 2)}</pre></div>`;
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    `<div class="status-card" style="border-left-color: #f44336;"><h4>Error:</h4><p>${error.message}</p></div>`;
+            }
+        }
+    </script>
+</body>
+</html>

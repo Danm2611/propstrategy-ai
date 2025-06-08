@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Park Grange Barnsley - Investment Analysis</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+        }
+        
+        .container {
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #1e3a8a;
+            padding-bottom: 20px;
+        }
+        
+        h1 {
+            color: #1e3a8a;
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        h2 {
+            color: #1e3a8a;
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 8px;
+        }
+        
+        h3 {
+            color: #374151;
+            font-size: 18px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            color: #6b7280;
+            font-size: 18px;
+            font-weight: 400;
+        }
+        
+        /* Executive Summary Box */
+        .executive-summary {
+            background: #f3f4f6;
+            border-left: 4px solid #1e3a8a;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+        }
+        
+        .summary-label {
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .summary-value {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+        
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: #1e3a8a;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+        
+        tr:hover {
+            background: #f9fafb;
+        }
+        
+        .table-header {
+            background: #374151;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .table-subheader {
+            background: #f3f4f6;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .table-total {
+            background: #eff6ff;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        
+        .right-align {
+            text-align: right;
+        }
+        
+        .center-align {
+            text-align: center;
+        }
+        
+        /* Value Highlights */
+        .positive {
+            color: #059669;
+            font-weight: 600;
+        }
+        
+        .negative {
+            color: #dc2626;
+            font-weight: 600;
+        }
+        
+        /* Key Metrics Box */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .metric-box {
+            background: #eff6ff;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #dbeafe;
+        }
+        
+        .metric-label {
+            color: #6b7280;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        
+        .metric-value {
+            color: #1e3a8a;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        /* Timeline */
+        .timeline {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+        
+        .timeline-item {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .timeline-phase {
+            background: #1e3a8a;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-right: 15px;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .timeline-description {
+            color: #374151;
+            font-size: 14px;
+        }
+        
+        /* Risk Matrix */
+        .risk-matrix {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .risk-item {
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .risk-low {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .risk-medium {
+            background: #fed7aa;
+            color: #92400e;
+        }
+        
+        .risk-high {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        /* Print Styles */
+        @media print {
+            .page-break {
+                page-break-after: always;
+            }
+            
+            body {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+            
+            .container {
+                padding: 0;
+            }
+        }
+        
+        /* Footer */
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+            text-align: center;
+            color: #6b7280;
+            font-size: 12px;
+        }
+        
+        /* Info Box */
+        .info-box {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        
+        .info-box strong {
+            color: #92400e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>PARK GRANGE BARNSLEY</h1>
+            <p class="subtitle">OPTIMAL STRATEGY ANALYSIS</p>
+        </div>
+        
+        <!-- Executive Summary -->
+        <div class="executive-summary">
+            <h3>EXECUTIVE SUMMARY</h3>
+            <p><strong>Strategy:</strong> Convert care home to 15 apartments, refinance portfolio, sell cottages separately</p>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <span class="summary-label">Investment Required:</span>
+                    <span class="summary-value">£460,000</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Capital Returned:</span>
+                    <span class="summary-value">£776,050</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Portfolio Retained:</span>
+                    <span class="summary-value">£1,665,000</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Net Annual Income:</span>
+                    <span class="summary-value">£24,120</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Key Metrics -->
+        <div class="metrics-grid">
+            <div class="metric-box">
+                <div class="metric-label">Total ROI</div>
+                <div class="metric-value">68.7%</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-label">Net Profit</div>
+                <div class="metric-value">£316k</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-label">Timeline</div>
+                <div class="metric-value">24 mo</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-label">Cash Yield</div>
+                <div class="metric-value">5.2%</div>
+            </div>
+        </div>
+        
+        <!-- Transaction Structure -->
+        <h2>TRANSACTION STRUCTURE</h2>
+        
+        <h3>Acquisition Costs</h3>
+        <table>
+            <tr>
+                <th>Component</th>
+                <th class="right-align">Value</th>
+            </tr>
+            <tr>
+                <td>Purchase Price</td>
+                <td class="right-align">£995,000</td>
+            </tr>
+            <tr>
+                <td>Stamp Duty (10% + 3% surcharge)</td>
+                <td class="right-align">£129,350</td>
+            </tr>
+            <tr>
+                <td>Legal & Professional Fees</td>
+                <td class="right-align">£8,000</td>
+            </tr>
+            <tr>
+                <td>Sourcing Fee (2%)</td>
+                <td class="right-align">£19,900</td>
+            </tr>
+            <tr>
+                <td>Survey & Due Diligence</td>
+                <td class="right-align">£5,000</td>
+            </tr>
+            <tr class="table-total">
+                <td><strong>Total Acquisition Cost</strong></td>
+                <td class="right-align"><strong>£1,157,250</strong></td>
+            </tr>
+        </table>
+        
+        <h3>Financing Structure</h3>
+        <table>
+            <tr>
+                <th>Source</th>
+                <th class="right-align">Amount</th>
+                <th class="center-align">LTV/LTC</th>
+            </tr>
+            <tr>
+                <td>Senior Debt (Purchase)</td>
+                <td class="right-align">£735,000</td>
+                <td class="center-align">75%</td>
+            </tr>
+            <tr>
+                <td>Development Finance</td>
+                <td class="right-align">£450,000</td>
+                <td class="center-align">60%</td>
+            </tr>
+            <tr class="table-subheader">
+                <td><strong>Total Debt</strong></td>
+                <td class="right-align"><strong>£1,185,000</strong></td>
+                <td></td>
+            </tr>
+            <tr class="table-total">
+                <td><strong>Equity Required</strong></td>
+                <td class="right-align"><strong>£460,000</strong></td>
+                <td class="center-align"><strong>28%</strong></td>
+            </tr>
+        </table>
+        
+        <div class="page-break"></div>
+        
+        <!-- Development Costs -->
+        <h2>DEVELOPMENT COSTS</h2>
+        
+        <h3>Construction Budget</h3>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th class="right-align">Total Cost</th>
+                <th class="right-align">Per Unit</th>
+            </tr>
+            <tr>
+                <td>Building Works</td>
+                <td class="right-align">£450,000</td>
+                <td class="right-align">£30,000</td>
+            </tr>
+            <tr>
+                <td>M&E Installation</td>
+                <td class="right-align">£90,000</td>
+                <td class="right-align">£6,000</td>
+            </tr>
+            <tr>
+                <td>Professional Fees</td>
+                <td class="right-align">£72,000</td>
+                <td class="right-align">£4,800</td>
+            </tr>
+            <tr>
+                <td>Planning & Building Control</td>
+                <td class="right-align">£15,000</td>
+                <td class="right-align">£1,000</td>
+            </tr>
+            <tr>
+                <td>Project Management</td>
+                <td class="right-align">£30,000</td>
+                <td class="right-align">£2,000</td>
+            </tr>
+            <tr>
+                <td>Contingency (10%)</td>
+                <td class="right-align">£65,700</td>
+                <td class="right-align">£4,380</td>
+            </tr>
+            <tr class="table-total">
+                <td><strong>Total Construction</strong></td>
+                <td class="right-align"><strong>£722,700</strong></td>
+                <td class="right-align"><strong>£48,180</strong></td>
+            </tr>
+        </table>
+        
+        <h3>Total Development Investment</h3>
+        <table>
+            <tr>
+                <td>Acquisition Costs</td>
+                <td class="right-align">£1,157,250</td>
+            </tr>
+            <tr>
+                <td>Construction Costs</td>
+                <td class="right-align">£722,700</td>
+            </tr>
+            <tr>
+                <td>Net Holding Costs</td>
+                <td class="right-align">£72,675</td>
+            </tr>
+            <tr class="table-total">
+                <td><strong>Total Project Cost</strong></td>
+                <td class="right-align"><strong>£1,952,625</strong></td>
+            </tr>
+        </table>
+        
+        <!-- Exit Strategy -->
+        <h2>EXIT STRATEGY BREAKDOWN</h2>
+        
+        <h3>Component 1: Cottage Disposals</h3>
+        <table>
+            <tr>
+                <th>Property</th>
+                <th>Type</th>
+                <th class="right-align">Current Rent</th>
+                <th class="right-align">Sale Value</th>
+                <th class="right-align">Net Proceeds</th>
+            </tr>
+            <tr>
+                <td>Cottage 1</td>
+                <td>2-bed</td>
+                <td class="right-align">£750 pcm</td>
+                <td class="right-align">£125,000</td>
+                <td class="right-align">£122,500</td>
+            </tr>
+            <tr>
+                <td>Cottage 2</td>
+                <td>3-bed</td>
+                <td class="right-align">£850 pcm</td>
+                <td class="right-align">£140,000</td>
+                <td class="right-align">£137,200</td>
+            </tr>
+            <tr>
+                <td>Cottage 3</td>
+                <td>3-bed</td>
+                <td class="right-align">£850 pcm</td>
+                <td class="right-align">£140,000</td>
+                <td class="right-align">£137,200</td>
+            </tr>
+            <tr>
+                <td>Cottage 4</td>
+                <td>2-bed</td>
+                <td class="right-align">Vacant</td>
+                <td class="right-align">£95,000</td>
+                <td class="right-align">£93,100</td>
+            </tr>
+            <tr class="table-total">
+                <td><strong>Total</strong></td>
+                <td></td>
+                <td class="right-align"><strong>£2,450 pcm</strong></td>
+                <td class="right-align"><strong>£500,000</strong></td>
+                <td class="right-align"><strong>£490,000</strong></td>
+            </tr>
+        </table>
+        <p style="font-size: 12px; color: #6b7280; margin-top: 5px;"><em>*Net proceeds after 2% sales costs</em></p>
+        
+        <div class="page-break"></div>
+        
+        <!-- Comparable Evidence -->
+        <h2>COMPARABLE EVIDENCE</h2>
+        
+        <h3>Apartment Sales - Barnsley 2024/2025</h3>
+        <table>
+            <tr>
+                <th>Development</th>
+                <th>Type</th>
+                <th class="right-align">Price</th>
+                <th class="center-align">£/sqft</th>
+                <th class="center-align">Date</th>
+                <th>Source</th>
+            </tr>
+            <tr>
+                <td>Victoria Road</td>
+                <td>2-bed apt</td>
+                <td class="right-align">£140,000</td>
+                <td class="center-align">£215</td>
+                <td class="center-align">Mar 2025</td>
+                <td>Rightmove</td>
+            </tr>
+            <tr>
+                <td>Carlton Court</td>
+                <td>2-bed apt</td>
+                <td class="right-align">£155,000</td>
+                <td class="center-align">£238</td>
+                <td class="center-align">Feb 2025</td>
+                <td>Rightmove</td>
+            </tr>
+            <tr>
+                <td>Regent House</td>
+                <td>1-bed apt</td>
+                <td class="right-align">£82,000</td>
+                <td class="center-align">£182</td>
+                <td class="center-align">Jan 2025</td>
+                <td>Rightmove</td>
+            </tr>
+            <tr>
+                <td>Town Centre</td>
+                <td>Studio</td>
+                <td class="right-align">£75,000</td>
+                <td class="center-align">£250</td>
+                <td class="center-align">Jan 2025</td>
+                <td>Zoopla</td>
+            </tr>
+            <tr class="table-subheader">
+                <td><strong>Average</strong></td>
+                <td></td>
+                <td class="right-align"><strong>£113,000</strong></td>
+                <td class="center-align"><strong>£221</strong></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+        
+        <h3>Investment Portfolio Comparables</h3>
+        <table>
+            <tr>
+                <th>Portfolio</th>
+                <th>Location</th>
+                <th class="center-align">Units</th>
+                <th class="right-align">Total Price</th>
+                <th class="right-align">Per Unit</th>
+                <th class="center-align">Yield</th>
+            </tr>
+            <tr>
+                <td>Brampton Beck</td>
+                <td>Barnsley</td>
+                <td class="center-align">12</td>
+                <td class="right-align">£960,000</td>
+                <td class="right-align">£80,000</td>
+                <td class="center-align">7.5%</td>
+            </tr>
+            <tr>
+                <td>BTL Portfolio</td>
+                <td>Sheffield</td>
+                <td class="center-align">8</td>
+                <td class="right-align">£800,000</td>
+                <td class="right-align">£100,000</td>
+                <td class="center-align">6.8%</td>
+            </tr>
+            <tr>
+                <td>Mixed Portfolio</td>
+                <td>Rotherham</td>
+                <td class="center-align">10</td>
+                <td class="right-align">£950,000</td>
+                <td class="right-align">£95,000</td>
+                <td class="center-align">7.2%</td>
+            </tr>
+        </table>
+        
+        <!-- Financial Returns -->
+        <h2>FINANCIAL RETURNS</h2>
+        
+        <h3>Return Metrics</h3>
+        <table>
+            <tr>
+                <th>Metric</th>
+                <th class="right-align">Value</th>
+            </tr>
+            <tr>
+                <td>Total Equity Invested</td>
+                <td class="right-align">£460,000</td>
+            </tr>
+            <tr>
+                <td>Portfolio Value Retained</td>
+                <td class="right-align">£1,665,000</td>
+            </tr>
+            <tr>
+                <td>Mortgage on Portfolio</td>
+                <td class="right-align">(£1,165,500)</td>
+            </tr>
+            <tr>
+                <td>Equity in Portfolio</td>
+                <td class="right-align">£499,500</td>
+            </tr>
+            <tr>
+                <td>Cottage Sale Proceeds</td>
+                <td class="right-align">£490,000</td>
+            </tr>
+            <tr>
+                <td>Development Costs Funded</td>
+                <td class="right-align">(£213,450)</td>
+            </tr>
+            <tr class="table-subheader">
+                <td><strong>Net Position</strong></td>
+                <td class="right-align"><strong>£776,050</strong></td>
+            </tr>
+            <tr class="table-total">
+                <td><strong>Profit</strong></td>
+                <td class="right-align positive"><strong>£316,050</strong></td>
+            </tr>
+            <tr class="table-total">
+                <td><strong>ROI</strong></td>
+                <td class="right-align positive"><strong>68.7%</strong></td>
+            </tr>
+        </table>
+        
+        <h3>Ongoing Income Analysis</h3>
+        <table>
+            <tr>
+                <th></th>
+                <th class="right-align">Annual</th>
+                <th class="right-align">Monthly</th>
+            </tr>
+            <tr>
+                <td>Gross Rental Income</td>
+                <td class="right-align">£125,400</td>
+                <td class="right-align">£10,450</td>
+            </tr>
+            <tr>
+                <td>Operating Expenses (25%)</td>
+                <td class="right-align">(£31,350)</td>
+                <td class="right-align">(£2,613)</td>
+            </tr>
+            <tr>
+                <td>Net Operating Income</td>
+                <td class="right-align">£94,050</td>
+                <td class="right-align">£7,838</td>
+            </tr>
+            <tr>
+                <td>Debt Service</td>
+                <td class="right-align">(£69,930)</td>
+                <td class="right-align">(£5,828)</td>
+            </tr>
+            <tr class="table-total">
+                <td><strong>Net Cash Flow</strong></td>
+                <td class="right-align positive"><strong>£24,120</strong></td>
+                <td class="right-align positive"><strong>£2,010</strong></td>
+            </tr>
+        </table>
+        
+        <div class="info-box">
+            <strong>Note:</strong> This represents a 5.2% cash-on-cash return on the £460k invested
+        </div>
+        
+        <div class="page-break"></div>
+        
+        <!-- Risk Assessment -->
+        <h2>RISK ASSESSMENT</h2>
+        
+        <h3>Key Risks</h3>
+        <table>
+            <tr>
+                <th>Risk</th>
+                <th class="center-align">Probability</th>
+                <th class="center-align">Impact</th>
+                <th>Mitigation</th>
+            </tr>
+            <tr>
+                <td>Planning Refusal</td>
+                <td class="center-align"><span class="risk-low">Low</span></td>
+                <td class="center-align"><span class="risk-high">High</span></td>
+                <td>Pre-application consultation</td>
+            </tr>
+            <tr>
+                <td>Construction Overrun</td>
+                <td class="center-align"><span class="risk-medium">Medium</span></td>
+                <td class="center-align"><span class="risk-medium">Medium</span></td>
+                <td>Fixed price contract, contingency</td>
+            </tr>
+            <tr>
+                <td>Cottage Sales Delay</td>
+                <td class="center-align"><span class="risk-low">Low</span></td>
+                <td class="center-align"><span class="risk-low">Low</span></td>
+                <td>Multiple buyers, realistic pricing</td>
+            </tr>
+            <tr>
+                <td>Refinance Terms</td>
+                <td class="center-align"><span class="risk-low">Low</span></td>
+                <td class="center-align"><span class="risk-medium">Medium</span></td>
+                <td>Multiple lenders, conservative LTV</td>
+            </tr>
+        </table>
+        
+        <!-- Implementation Timeline -->
+        <h2>IMPLEMENTATION TIMELINE</h2>
+        
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-phase">Months 0-3</div>
+                <div class="timeline-description">
+                    Complete purchase • Secure development finance • Submit planning • Tender construction
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-phase">Months 4-18</div>
+                <div class="timeline-description">
+                    Commence construction • Market cottages (Month 12) • Pre-let apartments (Month 15)
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-phase">Months 19-24</div>
+                <div class="timeline-description">
+                    Complete construction • Finalize sales • Execute refinance • Distribute returns
+                </div>
+            </div>
+        </div>
+        
+        <!-- Conclusion -->
+        <h2>CONCLUSION</h2>
+        
+        <div class="executive-summary">
+            <p>The optimal strategy delivers:</p>
+            <ul style="margin-top: 10px; margin-left: 20px;">
+                <li><strong>68.7% ROI</strong> within 24 months</li>
+                <li><strong>£316,050</strong> net profit</li>
+                <li><strong>£1.665m</strong> apartment portfolio retained</li>
+                <li><strong>5.2%</strong> ongoing cash yield</li>
+            </ul>
+            <p style="margin-top: 15px;">This compares favorably to:</p>
+            <ul style="margin-top: 10px; margin-left: 20px;">
+                <li>Full disposal strategy: 3.3% ROI</li>
+                <li>Full retention strategy: -1.2% initial yield</li>
+            </ul>
+            <p style="margin-top: 15px;">The cottage disposals effectively fund the development while the retained apartment portfolio provides long-term income and capital growth potential.</p>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>This document is for information purposes only and does not constitute financial advice.</p>
+            <p>All figures are projections based on current market conditions and comparable evidence.</p>
+            <p>Document prepared: June 2025</p>
+        </div>
+    </div>
+</body>
+</html>

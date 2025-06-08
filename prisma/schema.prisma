@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  password        String
+  name            String?
+  credits         Int       @default(0)
+  subscription    String?   // 'basic', 'pro', 'enterprise'
+  subscriptionEnd DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  reports         Report[]
+  payments        Payment[]
+  creditLogs      CreditLog[]
+}
+
+model Report {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  propertyAddress String
+  propertyPostcode String
+  purchasePrice   Float
+  propertyType    String
+  condition       String
+  reportType      String   // 'basic', 'professional', 'development'
+  reportUrl       String?
+  reportData      Json
+  status          String   @default("processing") // 'processing', 'completed', 'failed'
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  files           File[]
+}
+
+model File {
+  id        String   @id @default(cuid())
+  reportId  String
+  report    Report   @relation(fields: [reportId], references: [id])
+  fileName  String
+  fileUrl   String
+  fileType  String
+  fileSize  Int
+  createdAt DateTime @default(now())
+}
+
+model Payment {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  amount          Float
+  currency        String   @default("GBP")
+  status          String   // 'pending', 'succeeded', 'failed'
+  paymentMethod   String?
+  stripePaymentId String?  @unique
+  stripeInvoiceId String?
+  description     String?
+  metadata        Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model CreditLog {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  creditsChange   Int      // Positive for added, negative for used
+  creditsAfter    Int
+  transactionType String   // 'purchase', 'subscription', 'used', 'refund', 'bonus'
+  description     String
+  relatedId       String?  // PaymentId or ReportId
+  createdAt       DateTime @default(now())
+}
+
+model Subscription {
+  id                String   @id @default(cuid())
+  stripeCustomerId  String   @unique
+  stripePriceId     String
+  stripeSubscriptionId String @unique
+  status            String   // 'active', 'cancelled', 'past_due', 'trialing'
+  currentPeriodEnd  DateTime
+  cancelAtPeriodEnd Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}

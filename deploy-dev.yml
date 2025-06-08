@@ -1,0 +1,53 @@
+spec:
+  name: propstrategy-ai-dev
+  region: nyc
+  services:
+    - name: web
+      dockerfile_path: Dockerfile
+      github:
+        repo: Danm2611/propstrategy-ai
+        branch: dev
+        deploy_on_push: true
+      instance_count: 1
+      instance_size_slug: basic-xxs
+      http_port: 3000
+      envs:
+        - key: NODE_ENV
+          value: "production"
+        - key: DATABASE_URL
+          type: SECRET
+          value: ${DATABASE_URL}
+        - key: NEXTAUTH_URL
+          value: "https://propstrategy-ai-dev.ondigitalocean.app"
+        - key: NEXTAUTH_SECRET
+          type: SECRET
+          value: ${NEXTAUTH_SECRET}
+        - key: ANTHROPIC_API_KEY
+          type: SECRET
+          value: ${ANTHROPIC_API_KEY}
+        - key: STRIPE_SECRET_KEY
+          type: SECRET
+          value: ${STRIPE_SECRET_KEY}
+        - key: STRIPE_PUBLIC_KEY
+          value: ${STRIPE_PUBLIC_KEY}
+        - key: STRIPE_WEBHOOK_SECRET
+          type: SECRET
+          value: ${STRIPE_WEBHOOK_SECRET}
+        - key: AWS_ACCESS_KEY_ID
+          type: SECRET
+          value: ${AWS_ACCESS_KEY_ID}
+        - key: AWS_SECRET_ACCESS_KEY
+          type: SECRET
+          value: ${AWS_SECRET_ACCESS_KEY}
+        - key: AWS_S3_BUCKET
+          value: ${AWS_S3_BUCKET}
+        - key: RESEND_API_KEY
+          type: SECRET
+          value: ${RESEND_API_KEY}
+        - key: REDIS_URL
+          type: SECRET
+          value: ${REDIS_URL}
+      health_check:
+        http_path: /api/health
+        initial_delay_seconds: 30
+        period_seconds: 10
