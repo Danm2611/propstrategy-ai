@@ -105,11 +105,20 @@ export async function generateStructuredPropertyAnalysis(propertyData: PropertyD
   // Get comprehensive research data
   console.log('🔍 Gathering comprehensive market intelligence...')
   
-  const [perplexityResearch, comparablesData, landRegistryData] = await Promise.all([
-    propertyResearchService.researchProperty(propertyData),
-    propertyResearchService.searchComparables(propertyData.propertyPostcode, propertyData.propertyType),
-    generateRealMarketIntelligence(propertyData.propertyPostcode, propertyData.propertyType, propertyData.developmentGoals)
-  ])
+  try {
+    const [perplexityResearch, comparablesData, landRegistryData] = await Promise.all([
+      propertyResearchService.researchProperty(propertyData),
+      propertyResearchService.searchComparables(propertyData.propertyPostcode, propertyData.propertyType),
+      generateRealMarketIntelligence(propertyData.propertyPostcode, propertyData.propertyType, propertyData.developmentGoals)
+    ])
+    console.log('✅ Market research completed')
+  } catch (researchError) {
+    console.error('❌ Research failed:', researchError)
+    // Continue with basic analysis if research fails
+    var perplexityResearch = { analysis: 'Basic analysis - research unavailable' }
+    var comparablesData = { sales: [], rentals: [] }
+    var landRegistryData = { marketIntelligence: 'Market data unavailable' }
+  }
 
   const prompt = `${STRUCTURED_ANALYSIS_PROMPT}
 
@@ -250,6 +259,11 @@ CRITICAL: Use the market research data above to provide accurate rental rates, s
   try {
     console.log('🧠 Generating structured analysis with Claude...')
     
+    // Check API key
+    if (!process.env.ANTHROPIC_API_KEY) {
+      throw new Error('ANTHROPIC_API_KEY not configured')
+    }
+    
     const response = await anthropic.messages.create({
       model: 'claude-3-5-sonnet-20241022',
       max_tokens: 8192,
@@ -282,7 +296,13 @@ CRITICAL: Use the market research data above to provide accurate rental rates, s
     throw new Error('Unexpected response format from Claude')
   } catch (error) {
     console.error('Claude API error:', error)
-    throw new Error('Failed to generate structured property analysis')
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : 'No stack trace',
+      apiKeyExists: !!process.env.ANTHROPIC_API_KEY,
+      apiKeyLength: process.env.ANTHROPIC_API_KEY?.length || 0
+    })
+    throw new Error(`Failed to generate structured property analysis: ${error instanceof Error ? error.message : 'Unknown error'}`)
   }
 }
 
