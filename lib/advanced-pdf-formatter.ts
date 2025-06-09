@@ -848,7 +848,6 @@ export function parseClaudeAnalysisToStructured(htmlContent: string): AdvancedAn
       {phase: "Months 13-18", description: "Complete construction • Final lettings • Refinancing"}
     ],
     conclusion: {
-      delivers: "The optimal strategy delivers:",
       delivers: [
         "35% ROI within 18 months",
         "£159,200 net profit",
