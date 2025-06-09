@@ -42,10 +42,6 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
-# Install Puppeteer and configure Chrome
-RUN npm install puppeteer@latest --only=production \
-    && npx puppeteer browsers install chrome
-
 # Set ownership and permissions
 RUN chown -R nextjs:nodejs /app
 

@@ -1,6 +1,31 @@
 import puppeteer from 'puppeteer'
 
 export async function generatePDF(html: string, reportData: any): Promise<Buffer> {
+  // Try system Chrome first, fallback to bundled Chromium
+  let executablePath = process.env.PUPPETEER_EXECUTABLE_PATH
+  
+  if (!executablePath) {
+    // Try common Chrome locations
+    const chromePaths = [
+      '/usr/bin/google-chrome-stable',
+      '/usr/bin/google-chrome',
+      '/usr/bin/chromium-browser',
+      '/usr/bin/chromium'
+    ]
+    
+    for (const path of chromePaths) {
+      try {
+        const fs = await import('fs')
+        if (fs.existsSync(path)) {
+          executablePath = path
+          break
+        }
+      } catch (e) {
+        // Continue to next path
+      }
+    }
+  }
+
   const browser = await puppeteer.launch({
     headless: true,
     args: [
@@ -13,7 +38,7 @@ export async function generatePDF(html: string, reportData: any): Promise<Buffer
       '--single-process',
       '--disable-gpu'
     ],
-    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+    executablePath,
   })
 
   try {
