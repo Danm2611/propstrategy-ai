@@ -175,7 +175,12 @@ async function processAnalysis(reportId: string, data: any) {
   try {
     // Import enhanced analysis services
     const { generateStructuredPropertyAnalysis } = await import('@/lib/claude-structured-analyzer')
-    const { generateSimpleAdvancedReport } = await import('@/lib/pdf-simple')
+    
+    // Use different PDF generators based on environment
+    const isProduction = process.env.NODE_ENV === 'production'
+    const pdfGenerator = isProduction 
+      ? await import('@/lib/pdf-simple')
+      : await import('@/lib/advanced-pdf-formatter')
     
     // Get the full report data
     const report = await prisma.report.findUnique({
@@ -204,16 +209,27 @@ async function processAnalysis(reportId: string, data: any) {
     // Generate structured analysis with comprehensive research
     const structuredAnalysis = await generateStructuredPropertyAnalysis(propertyData)
     
-    // Generate simple report (temporary solution)
-    const pdfBuffer = await generateSimpleAdvancedReport(
-      {
-        propertyAddress: report.propertyAddress,
-        reportType: report.reportType,
-        createdAt: report.createdAt,
-        userId: report.userId
-      },
-      structuredAnalysis
-    )
+    // Generate PDF report based on environment
+    const pdfBuffer = isProduction 
+      ? await pdfGenerator.generateSimpleAdvancedReport(
+          {
+            propertyAddress: report.propertyAddress,
+            reportType: report.reportType,
+            createdAt: report.createdAt,
+            userId: report.userId
+          },
+          structuredAnalysis
+        )
+      : await pdfGenerator.generateAdvancedPropertyReport(
+          {
+            html: JSON.stringify(structuredAnalysis),
+            propertyAddress: report.propertyAddress,
+            reportType: report.reportType,
+            createdAt: report.createdAt,
+            userId: report.userId
+          },
+          structuredAnalysis
+        )
     
     // Save PDF to file system (in production, upload to S3/R2)
     const fs = await import('fs/promises')
