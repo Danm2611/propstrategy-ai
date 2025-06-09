@@ -1,45 +1,46 @@
 import puppeteer from 'puppeteer'
 
 export async function generatePDF(html: string, reportData: any): Promise<Buffer> {
-  // Try system Chrome first, fallback to bundled Chromium
-  let executablePath = process.env.PUPPETEER_EXECUTABLE_PATH
-  
-  if (!executablePath) {
-    // Try common Chrome locations
-    const chromePaths = [
-      '/usr/bin/google-chrome-stable',
-      '/usr/bin/google-chrome',
-      '/usr/bin/chromium-browser',
-      '/usr/bin/chromium'
-    ]
+  try {
+    // Try system Chrome first, fallback to bundled Chromium
+    let executablePath = process.env.PUPPETEER_EXECUTABLE_PATH
     
-    for (const path of chromePaths) {
-      try {
-        const fs = await import('fs')
-        if (fs.existsSync(path)) {
-          executablePath = path
-          break
+    if (!executablePath) {
+      // Try common Chrome locations
+      const chromePaths = [
+        '/usr/bin/google-chrome-stable',
+        '/usr/bin/google-chrome',
+        '/usr/bin/chromium-browser',
+        '/usr/bin/chromium'
+      ]
+      
+      for (const path of chromePaths) {
+        try {
+          const fs = await import('fs')
+          if (fs.existsSync(path)) {
+            executablePath = path
+            break
+          }
+        } catch (e) {
+          // Continue to next path
         }
-      } catch (e) {
-        // Continue to next path
       }
     }
-  }
 
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-accelerated-2d-canvas',
-      '--no-first-run',
-      '--no-zygote',
-      '--single-process',
-      '--disable-gpu'
-    ],
-    executablePath,
-  })
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process',
+        '--disable-gpu'
+      ],
+      executablePath,
+    })
 
   try {
     const page = await browser.newPage()
@@ -250,6 +251,23 @@ export async function generatePDF(html: string, reportData: any): Promise<Buffer
     return Buffer.from(pdf)
   } finally {
     await browser.close()
+  }
+  } catch (error) {
+    console.error('PDF generation failed:', error)
+    // Return a simple text buffer as fallback
+    const fallbackText = `
+Property Analysis Report
+========================
+
+Property: ${reportData.propertyAddress}
+Purchase Price: £${reportData.purchasePrice.toLocaleString()}
+
+PDF generation temporarily unavailable.
+Please contact support for assistance.
+
+Generated: ${new Date().toLocaleDateString()}
+`
+    return Buffer.from(fallbackText, 'utf-8')
   }
 }
 
