@@ -18,37 +18,13 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM node:20-slim AS runner
+FROM node:20-alpine AS runner
 
 WORKDIR /app
 
-# Install Chrome dependencies first
-RUN apt-get update && apt-get install -y \
-    wget \
-    gnupg \
-    ca-certificates \
-    fonts-liberation \
-    libasound2 \
-    libatk-bridge2.0-0 \
-    libdrm2 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxrandr2 \
-    libgbm1 \
-    libxss1 \
-    libnss3 \
-    libxshmfence1 \
-    --no-install-recommends
-
-# Install Chrome
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
-    && rm -rf /var/lib/apt/lists/*
-
 # Create non-root user
-RUN groupadd -r nodejs && useradd -r -g nodejs nextjs
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nextjs -u 1001
 
 # Copy necessary files from builder
 COPY --from=builder /app/public ./public
@@ -69,8 +45,6 @@ EXPOSE 3000
 # Set environment variables
 ENV NODE_ENV=production
 ENV PORT=3000
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
 # Start the application
 CMD ["node", "server.js"]

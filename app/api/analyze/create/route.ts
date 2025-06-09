@@ -175,7 +175,7 @@ async function processAnalysis(reportId: string, data: any) {
   try {
     // Import enhanced analysis services
     const { generateStructuredPropertyAnalysis } = await import('@/lib/claude-structured-analyzer')
-    const { generateAdvancedPropertyReport } = await import('@/lib/advanced-pdf-formatter')
+    const { generateSimpleAdvancedReport } = await import('@/lib/pdf-simple')
     
     // Get the full report data
     const report = await prisma.report.findUnique({
@@ -204,10 +204,9 @@ async function processAnalysis(reportId: string, data: any) {
     // Generate structured analysis with comprehensive research
     const structuredAnalysis = await generateStructuredPropertyAnalysis(propertyData)
     
-    // Generate professional PDF report matching Park Grange quality
-    const pdfBuffer = await generateAdvancedPropertyReport(
+    // Generate simple report (temporary solution)
+    const pdfBuffer = await generateSimpleAdvancedReport(
       {
-        html: '', // Not needed for structured approach
         propertyAddress: report.propertyAddress,
         reportType: report.reportType,
         createdAt: report.createdAt,
