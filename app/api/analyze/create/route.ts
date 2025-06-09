@@ -210,47 +210,66 @@ async function processAnalysis(reportId: string, data: any) {
     const structuredAnalysis = await generateStructuredPropertyAnalysis(propertyData)
     
     // Generate PDF report based on environment
-    const pdfBuffer = isProduction 
-      ? await pdfGenerator.generateSimpleAdvancedReport(
-          {
-            propertyAddress: report.propertyAddress,
-            reportType: report.reportType,
-            createdAt: report.createdAt,
-            userId: report.userId
-          },
-          structuredAnalysis
-        )
-      : await pdfGenerator.generateAdvancedPropertyReport(
-          {
-            html: JSON.stringify(structuredAnalysis),
-            propertyAddress: report.propertyAddress,
-            reportType: report.reportType,
-            createdAt: report.createdAt,
-            userId: report.userId
-          },
-          structuredAnalysis
-        )
+    let pdfBuffer: Buffer
     
-    // Save PDF to file system (in production, upload to S3/R2)
-    const fs = await import('fs/promises')
-    const path = await import('path')
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
-    await fs.mkdir(uploadsDir, { recursive: true })
+    if (isProduction) {
+      const { generateSimpleAdvancedReport } = pdfGenerator as typeof import('@/lib/pdf-simple')
+      pdfBuffer = await generateSimpleAdvancedReport(
+        {
+          propertyAddress: report.propertyAddress,
+          reportType: report.reportType,
+          createdAt: report.createdAt,
+          userId: report.userId
+        },
+        structuredAnalysis
+      )
+    } else {
+      const { generateAdvancedPropertyReport } = pdfGenerator as typeof import('@/lib/advanced-pdf-formatter')
+      pdfBuffer = await generateAdvancedPropertyReport(
+        {
+          html: JSON.stringify(structuredAnalysis),
+          propertyAddress: report.propertyAddress,
+          reportType: report.reportType,
+          createdAt: report.createdAt,
+          userId: report.userId
+        },
+        structuredAnalysis
+      )
+    }
     
+    // Save PDF - different approaches for local vs production
     const fileName = `report-${reportId}.pdf`
-    const filePath = path.join(uploadsDir, fileName)
-    await fs.writeFile(filePath, pdfBuffer)
+    let reportUrl = `/api/reports/${reportId}/download`
+    
+    if (!isProduction) {
+      // Local development: save to file system
+      try {
+        const fs = await import('fs/promises')
+        const path = await import('path')
+        const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
+        await fs.mkdir(uploadsDir, { recursive: true })
+        
+        const filePath = path.join(uploadsDir, fileName)
+        await fs.writeFile(filePath, pdfBuffer)
+        reportUrl = `/uploads/${fileName}` // Use direct file link for local
+      } catch (fsError) {
+        console.error('File system write error:', fsError)
+        // Fall back to API download even in local
+      }
+    }
     
     // Update report with completed status
     await prisma.report.update({
       where: { id: reportId },
       data: {
         status: "completed",
-        reportUrl: `/uploads/${fileName}`,
+        reportUrl,
         reportData: {
           ...report.reportData as any,
           structuredAnalysis,
           generatedAt: new Date().toISOString(),
+          // Store PDF data in database for production
+          ...(isProduction && { pdfBuffer: pdfBuffer.toString('base64') })
         }
       }
     })
