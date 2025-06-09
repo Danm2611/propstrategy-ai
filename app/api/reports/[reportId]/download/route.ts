@@ -40,15 +40,27 @@ export async function GET(
 
     // Check if we have stored PDF data in the database
     const reportData = report.reportData as any
+    console.log('PDF download attempt:', {
+      reportId: params.reportId,
+      hasPdfBuffer: !!reportData?.pdfBuffer,
+      pdfBufferLength: reportData?.pdfBuffer?.length || 0,
+      environment: process.env.NODE_ENV
+    })
+    
     if (reportData?.pdfBuffer) {
-      const pdfBuffer = Buffer.from(reportData.pdfBuffer, 'base64')
-      
-      return new Response(pdfBuffer, {
-        headers: {
-          'Content-Type': 'application/pdf',
-          'Content-Disposition': `attachment; filename="property-analysis-${report.propertyAddress.replace(/[^a-zA-Z0-9]/g, '-')}.pdf"`
-        }
-      })
+      try {
+        const pdfBuffer = Buffer.from(reportData.pdfBuffer, 'base64')
+        console.log('Serving PDF from database, size:', pdfBuffer.length)
+        
+        return new Response(pdfBuffer, {
+          headers: {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment; filename="property-analysis-${report.propertyAddress.replace(/[^a-zA-Z0-9]/g, '-')}.pdf"`
+          }
+        })
+      } catch (bufferError) {
+        console.error('Buffer conversion error:', bufferError)
+      }
     }
 
     // Fallback: try to read from file system (local development)
